@@ -76,3 +76,79 @@ function renderYAxes(newYScale, yAxis) {
 }
 
 
+// function used for updating circles group with a transition to
+// new circles
+function renderCircles(circlesGroup, newXScale, newYScale, chosenXAxis, chosenYAxis) {
+
+    circlesGroup.transition()
+      .duration(1000)
+      .attr("cx", d => newXScale(d[chosenXAxis]))
+      .attr("cy", d => newYScale(d[chosenYAxis]));
+  
+    return circlesGroup;
+  }
+  
+  function renderText(circlesTextGroup, newXScale,  newYScale, chosenXAxis, chosenYAxis) {
+  
+    circlesTextGroup.transition()
+      .duration(1000)
+      .attr("x", d => newXScale(d[chosenXAxis]))
+      .attr("y", d => newYScale(d[chosenYAxis]));
+  
+    return circlesTextGroup;
+  }
+  
+  // function used for updating circles group with new tooltip
+  function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
+  
+    var xlabel;
+    if (chosenXAxis === "poverty") {
+      xlabel = "In Poverty(%):";
+    }
+    else if (chosenXAxis === "age") {
+      xlabel = "Age (Median):";
+    }
+    else if (chosenXAxis === "income") {
+      xlabel = "Household Income (Median):";
+    }
+  
+    var ylabel;
+  
+    if (chosenYAxis === "obesity") {
+      ylabel = "Obese (%):";
+    }
+    else if (chosenYAxis === "smokes") {
+      ylabel = "Smokes (%):";
+    }
+    else if (chosenYAxis === "healthcare") {
+      ylabel = "Lacks Healthcare (%):";
+    }
+    var toolTip = d3.tip()
+      .attr("class", "tooltip")
+      .style("background","grey")
+      .style("color","white")
+      .offset([80, -60])
+      .html(function(d) {
+        if (chosenXAxis ==="poverty")
+        return (`${d.state}<br>${xlabel} ${d[chosenXAxis]}<br>${ylabel} ${d[chosenYAxis]}`);
+        else if (chosenXAxis === "age")
+        return (`${d.state}<br>${xlabel} ${d[chosenXAxis]}<br>${ylabel} ${d[chosenYAxis]}`);
+        else if (chosenXAxis === "income")
+        return (`${d.state}<br>${xlabel} ${d[chosenXAxis]}<br>${ylabel} ${d[chosenYAxis]}`);
+      });
+  
+  
+  
+    circlesGroup.call(toolTip);
+  
+    circlesGroup.on("mouseover", function(data) {
+      toolTip.show(data);
+    })
+      // onmouseout event
+      .on("mouseout", function(data, index) {
+        toolTip.hide(data);
+      });
+  
+    return circlesGroup;
+  }
+  
