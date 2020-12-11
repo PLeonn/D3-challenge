@@ -152,3 +152,111 @@ function renderCircles(circlesGroup, newXScale, newYScale, chosenXAxis, chosenYA
     return circlesGroup;
   }
   
+  // Retrieve data from the CSV file and execute everything below
+  d3.csv("assets/data/data.csv").then(function(data, err) {
+    if (err) throw err;
+  
+    // Parse data
+    data.forEach(function(data) {
+      data.poverty = +data.poverty;
+      data.age = +data.age;
+      data.income = +data.income;
+      data.obesity = +data.obesity;
+      data.smokes = +data.smokes;
+      data.healthcare = +data.healthcare;
+    });
+  
+    // xLinearScale function above csv import
+    var xLinearScale = xScale(data, chosenXAxis);
+  
+    // yLinearScale function above csv import
+    var yLinearScale = yScale(data, chosenYAxis);
+  
+    // Create initial axis functions
+    var bottomAxis = d3.axisBottom(xLinearScale);
+    var leftAxis = d3.axisLeft(yLinearScale);
+  
+    // append x axis
+    var xAxis = chartGroup.append("g")
+      .classed("x-axis", true)
+      .attr("transform", `translate(0, ${height})`)
+      .call(bottomAxis);
+  
+    // append y axis
+    var yAxis= chartGroup.append("g")
+      .classed("y-axis", true)
+      .call(leftAxis);
+  
+    // append initial circles
+    var circlesGroup = chartGroup.selectAll("circle")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("cx", d => xLinearScale(d[chosenXAxis]))
+      .attr("cy", d => yLinearScale(d[chosenYAxis]))
+      .attr("r", 15)
+      .attr("fill", "blue")
+      .attr("opacity", ".5");
+  
+    //text in circle
+    var circlesTextGroup = chartGroup.selectAll()
+      .data(data)
+      .enter()
+      .append("text")
+      .text(d=>(d.abbr))
+      .attr("x", d => xLinearScale(d[chosenXAxis]))
+      .attr("y", d => yLinearScale(d[chosenYAxis]))
+      .style("font-size", "10px")
+      .style("text-anchor", "middle")
+      .attr("fill", "black");
+  
+    // Create group for three x-axis labels
+    var labelsGroup = chartGroup.append("g")
+      .attr("transform", `translate(${width / 2}, ${height + 20})`);
+  
+    var povertyLabel = labelsGroup.append("text")
+      .attr("x", 0)
+      .attr("y", 20)
+      .attr("value", "poverty") // value to grab for event listener
+      .classed("active", true)
+      .text("In Poverty(%)");
+  
+    var ageLabel = labelsGroup.append("text")
+      .attr("x", 0)
+      .attr("y", 40)
+      .attr("value", "age") // value to grab for event listener
+      .classed("inactive", true)
+      .text("Age (Median)");
+  
+    var incomeLabel = labelsGroup.append("text")
+      .attr("x", 0)
+      .attr("y", 60)
+      .attr("value", "income") // value to grab for event listener
+      .classed("inactive", true)
+      .text("Household Income (Median)");
+      
+    // Create group for three y-axis labels
+    var obesityLabel = labelsGroup.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("x", (margin.left) * 2.5)
+      .attr("y", 0 - (height + 90))
+      .attr("value", "obesity")
+      .classed("active", true)
+      .text("Obease (%)");
+  
+    var smokesLabel = labelsGroup.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("x", (margin.left) * 2.5)
+      .attr("y", 0 - (height + 70))
+      .attr("value", "smokes")
+      .classed("inactive", true)
+      .text("Smokes (%)");
+  
+    var lacksHealthcareLabel = labelsGroup.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("x", (margin.left) * 2.5)
+      .attr("y", 0 - (height + 50))
+      .attr("value", "healthcare")
+      .classed("inactive", true)
+      .text("Lacks Healthcare (%)");
+  
