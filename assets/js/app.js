@@ -323,3 +323,55 @@ function renderCircles(circlesGroup, newXScale, newYScale, chosenXAxis, chosenYA
     
             console.log(chosenYAxis)
     
+            // functions here found above csv import
+            // updates y scale for new data
+            yLinearScale = yScale(data, chosenYAxis);
+    
+            // updates y axis with transition
+            YAxis = renderYAxes(yLinearScale, yAxis);
+    
+            // changes classes to change bold text
+            if (chosenYAxis === "obesity") {
+              obesityLabel
+                .classed("active", true)
+                .classed("inactive", false);
+              smokesLabel 
+                .classed("active", false)
+                .classed("inactive", true);
+              lacksHealthcareLabel
+                .classed("active", false)
+                .classed("inactive", true);
+            }
+            else if (chosenYAxis ==="smokes") {
+              obesityLabel
+                .classed("active", false)
+                .classed("inactive", true);
+              smokesLabel
+                .classed("active", true)
+                .classed("inactive", false);
+              lacksHealthcareLabel
+                .classed("active", false)
+                .classed("inactive", true);
+            }
+            else if (chosenYAxis ==="healthcare"){
+              obesityLabel
+                .classed("active", false)
+                .classed("inactive", true);
+              smokesLabel
+                .classed("active", false)
+                .classed("inactive", true);
+              lacksHealthcareLabel
+                .classed("active", true)
+                .classed("inactive", false);
+            }
+        }
+        circlesGroup = renderCircles(circlesGroup, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
+  
+        // updates tooltips with new info
+        circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+        
+        circlesTextGroup = renderText(circlesTextGroup, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
+      });
+  }).catch(function(error) {
+    console.log(error);
+  });
