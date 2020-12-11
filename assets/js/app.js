@@ -260,3 +260,66 @@ function renderCircles(circlesGroup, newXScale, newYScale, chosenXAxis, chosenYA
       .classed("inactive", true)
       .text("Lacks Healthcare (%)");
   
+    // updateToolTip function above csv import
+    var circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+  
+    // xlabels event listener
+    labelsGroup.selectAll("text")
+      .on("click", function() {
+        // get value of selection
+        var value = d3.select(this).attr("value");
+        if (value === "poverty" || value === "age" || value === "income") {
+  
+          // replaces chosenXAxis with value
+          chosenXAxis = value;
+  
+          // console.log(chosenXAxis)
+  
+          // functions here found above csv import
+          // updates x scale for new data
+          xLinearScale = xScale(data, chosenXAxis);
+  
+          // updates x axis with new values
+          xAxis = renderXAxes(xLinearScale, xAxis);
+  
+          // changes classes to change bold text
+          if (chosenXAxis === "poverty") {
+            povertyLabel
+              .classed("active", true)
+              .classed("inactive", false);
+            ageLabel 
+              .classed("active", false)
+              .classed("inactive", true);
+            incomeLabel
+              .classed("active", false)
+              .classed("inactive", true);
+          }
+          else if (chosenXAxis ==="age") {
+            povertyLabel
+              .classed("active", false)
+              .classed("inactive", true);
+            ageLabel 
+              .classed("active", true)
+              .classed("inactive", false);
+            incomeLabel
+              .classed("active", false)
+              .classed("inactive", true);
+          }
+          else if (chosenXAxis ==="income"){
+          povertyLabel
+            .classed("active", false)
+            .classed("inactive", true);
+          ageLabel 
+            .classed("active", false)
+            .classed("inactive", true);
+          incomeLabel
+            .classed("active", true)
+            .classed("inactive", false);
+          }}
+        else if (value === "obesity" || value === "smokes" || value === "healthcare"){
+  
+            // replaces chosenYAxis with value
+            chosenYAxis = value;
+    
+            console.log(chosenYAxis)
+    
